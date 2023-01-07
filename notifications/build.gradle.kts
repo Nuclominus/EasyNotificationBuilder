@@ -1,7 +1,10 @@
 plugins {
     id ("com.android.library")
     id ("org.jetbrains.kotlin.android")
+    `maven-publish`
 }
+
+apply(from = rootProject.file("publishing.gradle"))
 
 android {
     namespace = "io.github.nuclominus.notifications"
