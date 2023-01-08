@@ -9,9 +9,18 @@ import androidx.annotation.StringRes
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 
+// Default vibrate pattern
 private val VIBRATE_PATTERN = longArrayOf(0, 300)
 
-class GlobalNotificationConfiguration(
+/**
+ *  Configuration model for each type of notification
+ *  @property context [Context]
+ *  @property vibrationPattern [LongArray] notification vibration pattern (optional)
+ *  @property smallIcon [Int] notification small icon (optional)
+ *  @property color [Int] notification led color (optional)
+ *  @property defaultIcon [Int] notification default icon (optional)
+ */
+class GlobalNotificationConfiguration private constructor(
     private val context: Context,
     private val vibrationPattern: LongArray? = null,
     @DrawableRes private val smallIcon: Int? = null,
@@ -41,23 +50,26 @@ class GlobalNotificationConfiguration(
 
     fun getVibratePattern() = vibrationPattern ?: VIBRATE_PATTERN
 
+    /**
+     * GlobalNotificationConfiguration public builder class
+     */
     data class Builder(
         @DrawableRes
-        var smallIcon: Int? = null,
+        private var smallIcon: Int? = null,
 
         @ColorInt
-        var color: Int? = null,
+        private var color: Int? = null,
 
         @DrawableRes
-        var defaultIcon: Int? = null,
+        private var defaultIcon: Int? = null,
 
         @StringRes
-        var replayLabel: Int? = null,
+        private var replayLabel: Int? = null,
 
         @DrawableRes
-        var replayActionIcon: Int? = null,
+        private var replayActionIcon: Int? = null,
 
-        var vibrationPattern: LongArray? = null,
+        private var vibrationPattern: LongArray? = null,
     ) {
 
         fun smallIcon(@DrawableRes smallIcon: Int) = apply { this.smallIcon = smallIcon }
