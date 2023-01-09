@@ -7,7 +7,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 
 // Default vibrate pattern
 private val VIBRATE_PATTERN = longArrayOf(0, 300)
@@ -32,9 +31,7 @@ class GlobalNotificationConfiguration private constructor(
 
     fun getSmallIcon(): Int? = smallIcon
 
-    fun getNotificationColor(): Int? {
-        return color?.let { ContextCompat.getColor(context, it) }
-    }
+    fun getNotificationColor(): Int? = color
 
     fun getNotificationDefaultIcon(): Bitmap? {
         return defaultIcon?.let {
