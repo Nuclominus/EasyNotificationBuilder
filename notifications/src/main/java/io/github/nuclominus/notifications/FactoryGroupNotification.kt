@@ -13,7 +13,7 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
     private val builders = hashMapOf<String, NotificationCompat.Builder>()
 
     // show grouped notification
-    fun showOrUpdate(entry: NotificationEntry, avatar: Bitmap?) {
+    fun showOrUpdate(entry: NotificationEntry, avatar: Bitmap?, includeSummary: Boolean = false) {
         val ntfByChannel = notifications[entry.channelId]
 
         // add entry to array by channel
@@ -22,10 +22,14 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
         } ?: mutableListOf(entry)
 
         // create/recreate group
-        notifyGroup(avatar, notifications[entry.channelId]!!)
+        notifyGroup(avatar, notifications[entry.channelId]!!, includeSummary)
     }
 
-    private fun notifyGroup(avatar: Bitmap?, ntf: MutableList<NotificationEntry>) {
+    private fun notifyGroup(
+        avatar: Bitmap?,
+        ntf: MutableList<NotificationEntry>,
+        includeSummary: Boolean
+    ) {
         if (onAppInBackground()) {
             val notif = ntf.last()
             val builder = builders[notif.channelId]
@@ -40,7 +44,7 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
                 setContentText(content)
                 setLargeIcon(avatar ?: getDefaultIcon())
                 notif.group?.let(::setGroup)
-                setGroupSummary(false)
+                setGroupSummary(includeSummary)
                 setStyle(buildContentStyle(ntf, notif))
             }
 
