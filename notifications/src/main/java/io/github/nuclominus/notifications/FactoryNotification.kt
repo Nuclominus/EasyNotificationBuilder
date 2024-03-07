@@ -2,6 +2,7 @@ package io.github.nuclominus.notifications
 
 import android.Manifest
 import android.app.Notification
+import androidx.core.app.NotificationCompat.Style
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -27,7 +28,8 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
     abstract fun getDescription(): String
 
     private val silentChannelId = config.getContext().getString(R.string.enb_silent_channel_id)
-    private val replyRemoteInputId = config.getContext().getString(R.string.enb_reply_remote_input_id)
+    private val replyRemoteInputId =
+        config.getContext().getString(R.string.enb_reply_remote_input_id)
 
     @Suppress("unused")
     fun createChannel(channelId: String, name: String? = null) {
@@ -100,7 +102,7 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
     abstract fun buildContentStyle(
         ntf: MutableList<NotificationEntry>,
         notif: NotificationEntry
-    ): NotificationCompat.InboxStyle
+    ): Style
 
     abstract fun removeNotifications(channelId: String)
 
