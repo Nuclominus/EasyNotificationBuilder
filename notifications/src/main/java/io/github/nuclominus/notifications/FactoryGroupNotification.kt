@@ -22,7 +22,9 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
         } ?: mutableListOf(entry)
 
         // create/recreate group
-        notifyGroup(avatar, notifications[entry.channelId]!!, includeSummary)
+        notifications[entry.channelId]?.let { notifications ->
+            notifyGroup(avatar, notifications, includeSummary)
+        }
     }
 
     private fun notifyGroup(

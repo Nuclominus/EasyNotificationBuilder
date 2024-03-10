@@ -1,7 +1,7 @@
 [versions]
 androidxCoreKtx = "1.9.0"
 androidActivity = "1.6.1"
-gradleTools = "8.0.0-alpha11"
+gradleTools = "8.0.2"
 kotlin = "1.8.0"
 
 [libraries]

@@ -32,7 +32,17 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         config.getContext().getString(R.string.enb_reply_remote_input_id)
 
     @Suppress("unused")
-    fun createChannel(channelId: String, name: String? = null) {
+    fun createChannel(name: String? = getChannelId()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            createChannel(
+                id = getChannelId(),
+                name = name,
+                priority = NotificationManager.IMPORTANCE_MAX
+            )
+    }
+
+    @Suppress("unused")
+    fun createChannel(channelId: String, name: String? = getChannelId()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             createChannel(
                 id = channelId,
