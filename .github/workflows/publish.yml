@@ -22,14 +22,17 @@ jobs:
           java-version: 19
           cache: gradle
 
+      - name: Configure GPG Key
+        run: |
+          echo -n "$GPG_KEY" | base64 --decode | gpg --import
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+
       - name: Publish All Artifacts
         env:
-          RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
           OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
           OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
-          GPG_KEY: ${{ secrets.GPG_KEY }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
-        run: |
-         echo $GPG_KEY | base64 --decode | gpg --import --passphrase $GPG_KEY_PASSWORD
+        run:
          ./gradlew publishAllPublicationsToSonatypeStagingRepository
