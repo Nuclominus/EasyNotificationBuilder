@@ -22,17 +22,18 @@ jobs:
           java-version: 19
           cache: gradle
 
-      - name: Configure GPG Key
-        run: |
-          echo -n "$GPG_KEY" | base64 --decode | gpg --import
-        env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
+      - name: Import GPG
+        uses: crazy-max/ghaction-import-gpg@v6.1.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY }}
+          passphrase: ${{ secrets.GPG_KEY_PASSWORD }}
 
       - name: Publish All Artifacts
         env:
           OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
           OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
+          GPG_KEY: ${{ secrets.GPG_KEY }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
         run:
-         ./gradlew publishAllPublicationsToSonatypeStagingRepository
+          ./gradlew publishAllPublicationsToSonatypeStagingRepository
