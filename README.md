@@ -1,5 +1,6 @@
 EasyNotificationBuilder
 =======================
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.nuclominus/easynotificationbuilder.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.nuclominus/easynotificationbuilder/overview)
 
 EasyNotificationBuilder is a simple library for building notifications in Android. It provides an
 easy-to-use interface for creating and customizing notifications, allowing developers to quickly add
@@ -239,4 +240,4 @@ Catch payload from replay into your BroadcastReceiver and send network request w
 License
 -------
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
