@@ -23,11 +23,13 @@ jobs:
           cache: gradle
           working-directory: ./android
 
-      - name: Decode keystore
-        id: decode-keystore
+      - name: Decode keystore and create jks and properties file for signing the app
         run: |
-          echo "${{ secrets.JKS_FILE }}" > release.jks.asc
-          gpg --batch --passphrase "${{ secrets.JKS_STORE_PASSPHRASE }}" -d -o release.jks release.jks.asc
+            echo "$JKS_FILE" | base64 --decode > app/keystore.jks
+            echo "storeFile=keystore.jks" >> key.properties
+            echo "keyAlias=$JKS_ALIAS" >> key.properties
+            echo "storePassword=$JKS_STORE_PASSWORD" >> key.properties
+            echo "keyPassword=$JKS_KEY_PASSWORD" >> key.properties
 
       - name: Decode GPG private key
         id: decode-key

@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -24,12 +26,18 @@ android {
         }
     }
 
+    val keyProps = Properties()
+    val keyProperties = File(rootProject.rootDir, "key.properties")
+    if (keyProperties.exists() && keyProperties.isFile) {
+        keyProperties.inputStream().use { keyProps.load(it) }
+    }
+
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file("release.jks")
-            storePassword = System.getenv("JKS_STORE_PASSWORD")
-            keyAlias = System.getenv("JKS_ALIAS")
-            keyPassword = System.getenv("JKS_KEY_PASSWORD")
+            storeFile = keyProps.getProperty("storeFile")?.let { file(it) }
+            storePassword = keyProps.getProperty("storePassword")
+            keyAlias = keyProps.getProperty("keyAlias")
+            keyPassword = keyProps.getProperty("keyPassword")
         }
     }
 
