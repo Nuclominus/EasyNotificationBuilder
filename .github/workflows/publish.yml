@@ -27,7 +27,7 @@ jobs:
         id: decode-keystore
         run: |
           echo "${{ secrets.JKS_FILE }}" > release.jks.asc
-          gpg --batch --passphrase "${{ secrets.JKS_STORE_PASSPHRASE }}" -d -o release.jks app/release.jks.asc
+          gpg --batch --passphrase "${{ secrets.JKS_STORE_PASSPHRASE }}" -d -o release.jks release.jks.asc
 
       - name: Decode GPG private key
         id: decode-key
