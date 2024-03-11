@@ -21,6 +21,13 @@ jobs:
           distribution: 'temurin'
           java-version: 19
           cache: gradle
+          working-directory: ./android
+
+      - name: Decode keystore
+        id: decode-keystore
+        run: |
+          echo "${{ secrets.JKS_FILE }}" > release.jks.asc
+          gpg --batch --passphrase "${{ secrets.JKS_STORE_PASSPHRASE }}" -d -o release.jks app/release.jks.asc
 
       - name: Decode GPG private key
         id: decode-key
@@ -33,5 +40,6 @@ jobs:
           GPG_KEY: ${{ steps.decode-key.outputs.stdout }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+
         run:
           ./gradlew publishAllPublicationsToSonatypeStagingRepository

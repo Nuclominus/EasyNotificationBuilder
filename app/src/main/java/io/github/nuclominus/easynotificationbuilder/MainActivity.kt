@@ -1,5 +1,5 @@
 package io.github.nuclominus.easynotificationbuilder
 
-import androidx.activity.ComponentActivity
+import android.app.Activity
 
-class MainActivity : ComponentActivity()
+class MainActivity : Activity()
