@@ -22,11 +22,12 @@ jobs:
           java-version: 19
           cache: gradle
 
-      - name: Import GPG
-        uses: crazy-max/ghaction-import-gpg@v6.1.0
-        with:
-          gpg_private_key: ${{ secrets.GPG_KEY }}
-          passphrase: ${{ secrets.GPG_KEY_PASSWORD }}
+      - name: Decode GPG private key
+        id: decode-key
+        run: echo "${{ secrets.GPG_KEY }}" | base64 -d
+
+      - name: Import GPG key
+        run: echo "${{ steps.decode-key.outputs.stdout }}" | gpg --import
 
       - name: Publish All Artifacts
         env:
