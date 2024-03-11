@@ -69,7 +69,7 @@ class PushNotificationsService : FirebaseMessagingService() {
 Implementation:
 ```kotlin
 class SingleNotification @Inject constructor(private val config: GlobalNotificationConfiguration) :
-    FactorySingleNotification<SsinglePushModel>(config) {
+    FactorySingleNotification<SinglePushModel>(config) {
 
     // 1. Setup channel data
     override fun getChannelId() = "Single Push"
