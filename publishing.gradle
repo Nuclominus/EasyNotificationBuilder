@@ -7,7 +7,7 @@ tasks.register("sourceJar", Jar) {
 }
 
 project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID")
-project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY")?.decodeBase64()
+project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY")
 project.ext["signing.password"] = System.getenv("GPG_KEY_PASSWORD")
 
 afterEvaluate {
