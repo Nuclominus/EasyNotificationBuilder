@@ -6,15 +6,9 @@ tasks.register("sourceJar", Jar) {
     archiveClassifier.set('sources')
 }
 
-Properties localProps = new Properties()
-File localProperties = new File(rootProject.rootDir, "local.properties")
-if (localProperties.exists() && localProperties.isFile()) {
-    localProperties.withInputStream { localProps.load(it) }
-}
-
-project.ext["signing.keyId"] = localProps.getProperty("signing.keyId")
-project.ext["signing.secretKeyRingFile"] = localProps.getProperty("signing.secretKeyRingFile")
-project.ext["signing.password"] = localProps.getProperty("signing.password")
+project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID")
+project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY")
+project.ext["signing.password"] = System.getenv("GPG_KEY_PASSWORD")
 
 afterEvaluate {
     publishing {
@@ -59,8 +53,8 @@ afterEvaluate {
                 name = "sonatypeStaging"
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = localProps.getProperty("ossrhUsername")
-                    password = localProps.getProperty("ossrhPassword")
+                    username = System.getenv("OSS_USERNAME")
+                    password = System.getenv("OSS_PASSWORD")
                 }
             }
         }

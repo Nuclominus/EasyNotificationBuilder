@@ -1,0 +1,28 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 19
+
+      - name: Publish All Artifacts
+        env:
+          RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+          OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
+          OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
+        run: ./gradlew publishAllPublicationsToSonatypeStagingRepository
