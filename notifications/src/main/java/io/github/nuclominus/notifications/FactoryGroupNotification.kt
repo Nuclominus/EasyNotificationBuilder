@@ -7,12 +7,27 @@ import io.github.nuclominus.notifications.config.GlobalNotificationConfiguration
 import io.github.nuclominus.notifications.entry.NotificationEntry
 import io.github.nuclominus.notifications.util.withBoldSpan
 
-abstract class FactoryGroupNotification<T>(private val config: GlobalNotificationConfiguration) :
+/**
+ * Factory for group notifications
+ *
+ * @param T type of notification
+ * @property config [GlobalNotificationConfiguration] notification configuration
+ *
+ */
+@Suppress("unused")
+abstract class FactoryGroupNotification<T>(config: GlobalNotificationConfiguration) :
     FactoryNotification<T>(config) {
-    private val notifications = hashMapOf<String, MutableList<NotificationEntry>>()
-    private val builders = hashMapOf<String, NotificationCompat.Builder>()
 
-    // show grouped notification
+    private val cache = hashMapOf<String, NotificationCompat.Builder>()
+
+    /**
+     * Show or update a group of notifications
+     *
+     * @param entry [NotificationEntry] notification entry
+     * @param avatar [Bitmap] notification avatar (optional). If not provided, default icon will be used
+     * @param includeSummary [Boolean] include summary notification
+     *
+     */
     fun showOrUpdate(entry: NotificationEntry, avatar: Bitmap?, includeSummary: Boolean = false) {
         val ntfByChannel = notifications[entry.channelId]
 
@@ -27,19 +42,27 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
         }
     }
 
+    /**
+     * Notify a group of notifications
+     *
+     * @param avatar [Bitmap] notification avatar (optional). If not provided, default icon will be used
+     * @param ntf [MutableList<NotificationEntry>] list of notifications
+     * @param includeSummary [Boolean] Set this notification to be the group summary for a group of notifications. See [NotificationCompat.Builder.setGroupSummary]
+     */
     private fun notifyGroup(
         avatar: Bitmap?,
         ntf: MutableList<NotificationEntry>,
         includeSummary: Boolean
     ) {
-        if (onAppInBackground()) {
+        if (showNotification()) {
             val notif = ntf.last()
-            val builder = builders[notif.channelId]
+            val builder = cache[notif.channelId]
                 ?: createBuilder(notif)
 
             // update notification summary
             val content =
-                SpannableStringBuilder("${notif.author} ${notif.content}").withBoldSpan(notif.author)
+                SpannableStringBuilder("${notif.author} ${notif.content}")
+                    .withBoldSpan(notif.author)
 
             builder.apply {
                 setContentTitle(notif.title ?: notif.author)
@@ -51,18 +74,9 @@ abstract class FactoryGroupNotification<T>(private val config: GlobalNotificatio
             }
 
             // add to list of builders
-            builders[notif.channelId] = builder
+            cache[notif.channelId] = builder
 
             notify(builder.build(), notif.notificationId)
-        }
-    }
-
-    override fun removeNotifications(channelId: String) {
-        config.withNotificationManager {
-            notifications[channelId]?.forEach {
-                cancel(it.notificationId)
-            }
-            notifications.remove(channelId)
         }
     }
 }

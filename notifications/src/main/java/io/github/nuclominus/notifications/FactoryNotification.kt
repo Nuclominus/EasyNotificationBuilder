@@ -16,21 +16,47 @@ import android.os.Build
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import io.github.nuclominus.notifications.config.GlobalNotificationConfiguration
 import io.github.nuclominus.notifications.entry.NotificationEntry
+import io.github.nuclominus.notifications.util.PendingIntentType
 import java.util.*
 
+/**
+ * FactoryNotification
+ *
+ * @property config The configuration for the notifications
+ * @constructor Create FactoryNotification
+ */
 abstract class FactoryNotification<T>(private val config: GlobalNotificationConfiguration) {
 
+    /**
+     * Get the channel id for the notification
+     *
+     * @return The channel id
+     */
     abstract fun getChannelId(): String
+
+    /**
+     * Get the description for the notification
+     *
+     * @return The description
+     */
     abstract fun getDescription(): String
 
+    protected val notifications = hashMapOf<String, MutableList<NotificationEntry>>()
     private val silentChannelId = config.getContext().getString(R.string.enb_silent_channel_id)
     private val replyRemoteInputId =
         config.getContext().getString(R.string.enb_reply_remote_input_id)
 
+    /**
+     * Create a notification channel
+     *
+     * @param name The channel name
+     * @see NotificationChannel
+     */
     @Suppress("unused")
     fun createChannel(name: String? = getChannelId()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -41,6 +67,13 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
             )
     }
 
+    /**
+     * Create a notification channel
+     *
+     * @param channelId The channel id
+     * @param name The channel name
+     * @see NotificationChannel
+     */
     @Suppress("unused")
     fun createChannel(channelId: String, name: String? = getChannelId()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -51,6 +84,11 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
             )
     }
 
+    /**
+     * Create a silent notification channel
+     *
+     * @see NotificationChannel
+     */
     @Suppress("unused")
     private fun createSilentChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -62,6 +100,14 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         }
     }
 
+    /**
+     * Create a notification channel
+     *
+     * @param id The channel id
+     * @param name The channel name
+     * @param priority The channel priority
+     * @see NotificationChannel
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannel(id: String, name: String?, priority: Int) {
         val channel = NotificationChannel(id, name ?: id, priority).apply {
@@ -81,18 +127,25 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         }
     }
 
+    /**
+     * Create a notification builder
+     *
+     * @param notif The notification
+     * @return The notification builder
+     * @see NotificationCompat.Builder
+     */
     fun createBuilder(notif: NotificationEntry): NotificationCompat.Builder {
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder = NotificationCompat.Builder(
             config.getContext(),
-            if (onAppInBackground()) notif.channelId else silentChannelId
+            if (showNotification()) notif.channelId else silentChannelId
         )
         builder.apply {
             config.getSmallIcon()?.let(::setSmallIcon)
             setWhen(System.currentTimeMillis())
 
             // set priority by app background state
-            priority = if (onAppInBackground())
+            priority = if (showNotification())
                 NotificationCompat.PRIORITY_MAX
             else
                 NotificationCompat.PRIORITY_DEFAULT
@@ -109,17 +162,39 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         return builder
     }
 
+    /**
+     * Build the style for the notification
+     *
+     * @param ntf The list of notifications
+     * @param notif The notification
+     * @return The style for the notification
+     * @see NotificationCompat.Style
+     */
     abstract fun buildContentStyle(
         ntf: MutableList<NotificationEntry>,
         notif: NotificationEntry
     ): Style
 
-    abstract fun removeNotifications(channelId: String)
-
+    /**
+     * Get the intent for the notification
+     *
+     * @param context The context
+     * @param model The model to be used to create the intent
+     * @return The intent
+     */
     abstract fun getIntent(context: Context, model: T): Intent
 
+    /**
+     * Get the default icon for the notification
+     */
     fun getDefaultIcon(): Bitmap? = config.getNotificationDefaultIcon()
 
+    /**
+     * Get a PendingIntent for a notification action
+     *
+     * @param intent The intent to be used for the action
+     * @return The PendingIntent
+     */
     private fun getPendingIntent(intent: Intent): PendingIntent? {
         return PendingIntent.getBroadcast(
             config.getContext(),
@@ -133,6 +208,15 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         )
     }
 
+    /**
+     * Get an action for a notification
+     *
+     * @param intent The intent to be used for the action
+     * @param icon The icon for the action
+     * @param actionTitle The title for the action
+     * @return The action
+     * @see NotificationCompat.Action
+     */
     fun getAction(intent: Intent, icon: Int, actionTitle: Int): NotificationCompat.Action {
         return NotificationCompat.Action.Builder(
             icon,
@@ -141,6 +225,15 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         ).build()
     }
 
+    /**
+     * Get a reply action for a notification
+     *
+     * @param intent The intent to be used for the reply action
+     * @param replyLabel The label for the reply action
+     * @param iconAction The icon for the reply action
+     * @return The reply action
+     * @see NotificationCompat.Action
+     */
     fun getActionReply(
         intent: Intent,
         replyLabel: String,
@@ -160,21 +253,69 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
             .build()
     }
 
-    fun getPendingIntent(model: T): PendingIntent {
+    /**
+     * Get a PendingIntent for a notification action
+     *
+     * @param model The model to be used to create the PendingIntent
+     * @param type The type of PendingIntent to be created
+     * @param requestCode The request code for the PendingIntent
+     * @param flags The flags for the PendingIntent
+     * @return The PendingIntent
+     */
+    @Suppress("unused")
+    fun getPendingIntent(
+        model: T,
+        type: PendingIntentType = PendingIntentType.Activity,
+        requestCode: Int = Random().nextInt(),
+        flags: Int = PendingIntent.FLAG_UPDATE_CURRENT
+    ): PendingIntent {
+        val context = config.getContext()
         val intent = getIntent(config.getContext(), model)
+        val flag = flags or PendingIntent.FLAG_IMMUTABLE
 
-        return PendingIntent.getActivity(
-            config.getContext(),
-            Random().nextInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        return when (type) {
+            PendingIntentType.Activity -> PendingIntent.getActivity(
+                context,
+                requestCode,
+                intent,
+                flag
+            )
+
+            PendingIntentType.Service -> PendingIntent.getService(
+                context,
+                requestCode,
+                intent,
+                flag
+            )
+
+            PendingIntentType.Broadcast -> PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                flag
+            )
+        }
     }
 
-    fun onAppInBackground(): Boolean {
+    /**
+     * Special check that allows to show or not the notification
+     * For example, if the user is in a call, the notification should not be shown
+     * or show notifications only if app in background etc.
+     *
+     * Override this method to implement your own logic
+     *
+     * @return true if the notification should be shown, false otherwise
+     */
+    fun showNotification(): Boolean {
         return true
     }
 
+    /**
+     * Get the notification id for a channel
+     *
+     * @param channelId The channel id
+     * @return The notification id
+     */
     fun getNotifId(channelId: String): Int {
         val sequence = channelId.toCharArray().asSequence()
         val iterator = sequence.iterator()
@@ -185,6 +326,13 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         return id
     }
 
+    /**
+     * Notify the user with a notification.
+     * Also checks if the app has the permission to show notifications
+     *
+     * @param notification The notification to be shown
+     * @param notId The notification id
+     */
     fun notify(notification: Notification?, notId: Int) {
         notification?.let {
             if (ContextCompat.checkSelfPermission(
@@ -199,12 +347,57 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
         }
     }
 
+    /**
+     * Cancel all app notifications
+     *
+     * For example, if user logs out, you can cancel all notifications
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun cancelAllNotifications() {
+        config.withNotificationManager(NotificationManagerCompat::cancelAll)
+    }
+
+    /**
+     * Remove all notifications from this type of channel
+     */
+    fun clearNotificationsBy() {
+        cancelNotifications(getChannelId())
+    }
+
+    /**
+     * Remove all notifications by [channelId]
+     *
+     * Used to remove all notifications from a specific channel.
+     * In way when you configure multiple channels of single type.
+     * For example, you have a chat app and you have a channel for each chat.
+     *
+     * If you want to remove all notifications from all channels, use [cancelAllNotifications]
+     *
+     * @param channelId [String] channel id
+     */
+    fun clearNotificationsBy(channelId: String) {
+        cancelNotifications(channelId)
+    }
+
+    /**
+     * Remove all notifications from specific channel
+     */
+    private fun cancelNotifications(channelId: String) {
         config.withNotificationManager {
-            cancelAll()
+            notifications[channelId]?.forEach {
+                cancel(it.notificationId)
+            }
+            notifications.remove(channelId)
         }
     }
 
+    /**
+     * Additional check for the notification Avatar/LargeIcon
+     *
+     * @param imageUrl The url of the image
+     * @param loadImageAction The action to load the image
+     * @return The image
+     */
     fun loadImage(imageUrl: String?, loadImageAction: (String) -> Bitmap?): Bitmap? {
         if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
             return loadImageAction(imageUrl) ?: getDefaultIcon()
