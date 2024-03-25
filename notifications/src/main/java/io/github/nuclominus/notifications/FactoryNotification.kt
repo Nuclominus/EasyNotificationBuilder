@@ -360,7 +360,7 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
     /**
      * Remove all notifications from this type of channel
      */
-    fun clearNotificationsBy() {
+    fun clearNotifications() {
         cancelNotifications(getChannelId())
     }
 
