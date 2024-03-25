@@ -5,12 +5,11 @@ plugins {
 
 android {
     namespace = "io.github.nuclominus.easynotificationbuilder"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "io.github.nuclominus.easynotificationbuilder"
         minSdk = 21
-        targetSdk = 33
         versionCode = 1
         versionName = "0.0.1"
 
@@ -35,13 +34,9 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    packagingOptions {
+    packaging{
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-
-dependencies {
-    implementation(libs.androidx.activity.ktx)
 }

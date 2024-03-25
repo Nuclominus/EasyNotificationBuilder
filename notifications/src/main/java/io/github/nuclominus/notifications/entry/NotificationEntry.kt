@@ -17,7 +17,7 @@ import androidx.core.app.NotificationCompat
  * @property data HashMap<[String], [String]> custom data
  *
  */
-data class NotificationEntry constructor(
+data class NotificationEntry(
     val channelId: String,
     val notificationId: Int,
     val title: String? = null,

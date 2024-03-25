@@ -5,10 +5,23 @@ import androidx.core.app.NotificationCompat
 import io.github.nuclominus.notifications.config.GlobalNotificationConfiguration
 import io.github.nuclominus.notifications.entry.NotificationEntry
 
+/**
+ * Factory for single notifications
+ *
+ * @param T type of notification
+ * @property config [GlobalNotificationConfiguration] notification configuration
+ *
+ */
+@Suppress("unused")
 abstract class FactorySingleNotification<T>(private val config: GlobalNotificationConfiguration) :
     FactoryNotification<T>(config) {
-    private val notifications = hashMapOf<String, MutableList<NotificationEntry>>()
 
+    /**
+     * Show or update a single notification
+     *
+     * @param entry [NotificationEntry] notification entry
+     * @param avatar [Bitmap] notification avatar (optional). If not provided, default icon will be used
+     */
     fun show(entry: NotificationEntry, avatar: Bitmap? = null) {
         val ntfByChannel = notifications[entry.channelId]
 
@@ -17,11 +30,19 @@ abstract class FactorySingleNotification<T>(private val config: GlobalNotificati
             add(entry)
         } ?: mutableListOf(entry)
 
-        notifySingle(avatar, notifications[entry.channelId]!!)
+        notifications[entry.channelId]?.let {
+            notifySingle(avatar, it)
+        }
     }
 
+    /**
+     * Notify a single notification
+     *
+     * @param avatar [Bitmap] notification avatar (optional). If not provided, default icon will be used
+     * @param ntf [MutableList<NotificationEntry>] list of notifications
+     */
     private fun notifySingle(avatar: Bitmap?, ntf: MutableList<NotificationEntry>) {
-        if (onAppInBackground()) {
+        if (showNotification()) {
             val notif = ntf.last()
             val builder = createBuilder(notif)
 
@@ -34,17 +55,15 @@ abstract class FactorySingleNotification<T>(private val config: GlobalNotificati
         }
     }
 
+    /**
+     * Build content style for notification
+     *
+     * @param ntf [MutableList<NotificationEntry>] list of notifications
+     * @param notif [NotificationEntry] notification entry
+     */
     override fun buildContentStyle(
         ntf: MutableList<NotificationEntry>,
         notif: NotificationEntry
     ) = NotificationCompat.InboxStyle()
 
-    override fun removeNotifications(channelId: String) {
-        config.withNotificationManager {
-            notifications[channelId]?.forEach {
-                cancel(it.notificationId)
-            }
-            notifications.remove(channelId)
-        }
-    }
 }
