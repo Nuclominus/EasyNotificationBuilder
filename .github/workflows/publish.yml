@@ -21,7 +21,6 @@ jobs:
           distribution: 'temurin'
           java-version: 19
           cache: gradle
-          working-directory: ./android
 
       - name: Decode GPG private key
         id: decode-key
