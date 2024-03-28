@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -23,21 +21,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-    }
-
-    val keyProps = Properties()
-    val keyProperties = File(rootProject.rootDir, "key.properties")
-    if (keyProperties.exists() && keyProperties.isFile) {
-        keyProperties.inputStream().use { keyProps.load(it) }
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = keyProps.getProperty("storeFile")?.let { file(it) }
-            storePassword = keyProps.getProperty("storePassword")
-            keyAlias = keyProps.getProperty("keyAlias")
-            keyPassword = keyProps.getProperty("keyPassword")
         }
     }
 

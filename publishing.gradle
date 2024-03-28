@@ -3,7 +3,8 @@ apply plugin: 'signing'
 
 tasks.register("sourceJar", Jar) {
     from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
+    configurations { mustRunAfter("generateMetadataFileForReleaseAarPublication") }
+    archiveClassifier.set('sourcesJar')
 }
 
 project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID")
@@ -19,7 +20,7 @@ afterEvaluate {
 
                 groupId = "io.github.nuclominus"
                 artifactId = "easynotificationbuilder"
-                version = "0.1.1"
+                version = "0.1.2"
 
                 pom {
                     name = 'Easy Notification Builder'
