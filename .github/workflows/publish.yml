@@ -7,11 +7,11 @@ on:
 
 jobs:
   deploy:
-    environment: maven-conf
     permissions:
       contents: read
       checks: write
     runs-on: ubuntu-latest
+    environment: maven-conf
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,17 +23,17 @@ jobs:
           java-version: 19
           cache: gradle
 
-      - name: Decode GPG private key
+      - name: Decode sign key
         id: decode-key
-        run: echo "${{ secrets.SIGN_KEY }}" | base64 -d
+        run: echo "${{ secrets.SIGN_KEY }}" | base64 --decode > sign.gpg
 
       - name: Publish All Artifacts
         env:
           OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
           OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
-          SIGN_KEY: ${{ steps.decode-key.outputs.stdout }}
           SIGN_KEY_ID: ${{ secrets.SIGN_KEY_ID }}
           SIGN_KEY_PASS: ${{ secrets.SIGN_KEY_PASS }}
 
-        run:
+        run: |
+          export SIGN_KEY="$(realpath sign.gpg)"
           ./gradlew publishAllPublicationsToSonatypeStagingRepository
