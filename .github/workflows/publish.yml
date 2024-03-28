@@ -28,8 +28,6 @@ jobs:
         with:
           base64: echo "${{ secrets.GPG_KEY }}"
           environment: GPG_KEY
-        run: |
-          echo $GPG_KEY
 #        id: decode-key
 #        run: echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d
 
