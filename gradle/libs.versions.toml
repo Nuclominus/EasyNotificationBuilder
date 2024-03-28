@@ -1,14 +1,11 @@
 [versions]
-androidxCoreKtx = "1.9.0"
-androidActivity = "1.6.1"
-gradleTools = "8.0.2"
-kotlin = "1.8.0"
+androidxCoreKtx = "1.12.0"
+gradleTools = "8.3.1"
+kotlin = "1.9.23"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
-androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidActivity" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref ="gradleTools"}
 android-library = { id = "com.android.library", version.ref ="gradleTools"}
 android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref ="kotlin"}
