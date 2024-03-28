@@ -37,9 +37,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 }
 
-project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID") ?: "GPG_KEY_ID is not set"
-project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY") ?: "GPG_KEY is not set"
-project.ext["signing.password"] = System.getenv("GPG_KEY_PASSWORD") ?: "GPG_KEY_PASSWORD is not set"
+project.ext["signing.keyId"] = System.getenv("SIGN_KEY_ID")
+project.ext["signing.secretKeyRingFile"] = System.getenv("SIGN_KEY")
+project.ext["signing.password"] = System.getenv("SIGN_KEY_PASS")
 
 val sourceJar by tasks.registering(Jar::class) {
     from(android.sourceSets["main"].java.srcDirs)

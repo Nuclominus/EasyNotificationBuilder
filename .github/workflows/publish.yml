@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy:
+    environment: maven-conf
     permissions:
       contents: read
       checks: write
@@ -24,20 +25,15 @@ jobs:
 
       - name: Decode GPG private key
         id: decode-key
-        uses: akiojin/decode-base64-github-action@v0.1.0
-        with:
-          base64: echo "${{ env.secrets.GPG_KEY }}"
-          environment: GPG_KEY
-#        id: decode-key
-#        run: echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d
+        run: echo "${{ secrets.SIGN_KEY }}" | base64 -d
 
       - name: Publish All Artifacts
         env:
-          OSS_USERNAME: ${{ env.secrets.OSS_USERNAME }}
-          OSS_PASSWORD: ${{ env.secrets.OSS_PASSWORD }}
-#          GPG_KEY: ${{ steps.decode-key.outputs.stdout }}
-          GPG_KEY_ID: ${{ env.secrets.GPG_KEY_ID }}
-          GPG_KEY_PASSWORD: ${{ env.secrets.GPG_KEY_PASSWORD }}
+          OSS_USERNAME: ${{ secrets.OSS_USERNAME }}
+          OSS_PASSWORD: ${{ secrets.OSS_PASSWORD }}
+          SIGN_KEY: ${{ steps.decode-key.outputs.stdout }}
+          SIGN_KEY_ID: ${{ secrets.SIGN_KEY_ID }}
+          SIGN_KEY_PASS: ${{ secrets.SIGN_KEY_PASS }}
 
         run:
           ./gradlew publishAllPublicationsToSonatypeStagingRepository
