@@ -37,22 +37,23 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 }
 
-tasks.register<Jar>("sourceJar") {
-    mustRunAfter("generateMetadataFileForReleaseAarPublication")
+project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID") ?: "GPG_KEY_ID is not set"
+project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY") ?: "GPG_KEY is not set"
+project.ext["signing.password"] = System.getenv("GPG_KEY_PASSWORD") ?: "GPG_KEY_PASSWORD is not set"
+
+val sourceJar by tasks.registering(Jar::class) {
     from(android.sourceSets["main"].java.srcDirs)
-    archiveClassifier.set("sources")
+    archiveClassifier.set("sourcesJar")
 }
 
-project.ext["signing.keyId"] = System.getenv("GPG_KEY_ID")
-project.ext["signing.secretKeyRingFile"] = System.getenv("GPG_KEY")
-project.ext["signing.password"] = System.getenv("GPG_KEY_PASSWORD")
-
 afterEvaluate {
+
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                artifact(tasks["sourceJar"])
+                artifact(sourceJar)
+
                 groupId = "io.github.nuclominus"
                 artifactId = "easynotificationbuilder"
                 version = "0.1.2"
