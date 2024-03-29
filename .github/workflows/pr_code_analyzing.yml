@@ -1,4 +1,4 @@
-name: (PR) Code Analyzing
+name: Code Analyzing
 
 on:
   pull_request:

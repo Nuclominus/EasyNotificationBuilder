@@ -1,5 +1,4 @@
-name: (PR) Git Publish Release
-
+name: Git Release
 on:
   push:
     tags:
