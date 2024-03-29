@@ -19,5 +19,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          body_path: ${{ github.workspace }}-CHANGELOG.txt
-          token: ${{ secrets.PROJECT_GITHUB_TOKEN }}
+          files: ${{ github.workspace }}-CHANGELOG.txt
