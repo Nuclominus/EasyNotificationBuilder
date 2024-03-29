@@ -1,6 +1,7 @@
 EasyNotificationBuilder
 =======================
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.nuclominus/easynotificationbuilder.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.nuclominus/easynotificationbuilder/overview)
+[![Git Release](https://github.com/Nuclominus/EasyNotificationBuilder/actions/workflows/pr_git_release.yml/badge.svg)](https://github.com/Nuclominus/EasyNotificationBuilder/actions/workflows/pr_git_release.yml)
 
 EasyNotificationBuilder is a simple library for building notifications in Android. It provides an
 easy-to-use interface for creating and customizing notifications, allowing developers to quickly add
