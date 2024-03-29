@@ -1,5 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
@@ -65,7 +63,7 @@ afterEvaluate {
 
                 groupId = "io.github.nuclominus"
                 artifactId = "easynotificationbuilder"
-                version = "0.1.2"
+                version = "0.1.3"
 
                 pom {
                     name.set("Easy Notification Builder")
