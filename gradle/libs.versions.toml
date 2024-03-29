@@ -2,10 +2,12 @@
 androidxCoreKtx = "1.12.0"
 gradleTools = "8.3.1"
 kotlin = "1.9.23"
+detektAnalyzer = "1.23.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
 
 [plugins]
-android-library = { id = "com.android.library", version.ref ="gradleTools"}
-android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref ="kotlin"}
+android-library = { id = "com.android.library", version.ref = "gradleTools" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+detekt-analyzer = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektAnalyzer" }

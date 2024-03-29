@@ -1,6 +1,9 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.detekt.analyzer)
     `maven-publish`
     signing
 }
@@ -35,6 +38,12 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+}
+
+detekt {
+    source.setFrom("src/main/kotlin")
+    config.setFrom("../config/detekt/detekt.yaml")
+    buildUponDefaultConfig = true
 }
 
 project.ext["signing.keyId"] = System.getenv("SIGN_KEY_ID")

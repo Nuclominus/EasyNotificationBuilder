@@ -2,4 +2,5 @@
 plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.kotlin) apply false
+    alias(libs.plugins.detekt.analyzer) apply false
 }
