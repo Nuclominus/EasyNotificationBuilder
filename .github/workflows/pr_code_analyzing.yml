@@ -1,4 +1,4 @@
-name: (PR) Code Analyzing
+name: Code Analyzing
 
 on:
   pull_request:
@@ -18,7 +18,7 @@ jobs:
           cache: 'gradle'
 
       - name: 'Run Detekt analyzer'
-        run: ./gradlew --no-daemon detekt
+        run: ./gradlew --no-daemon :notifications:detekt
 
   code_build:
     runs-on: ubuntu-latest
