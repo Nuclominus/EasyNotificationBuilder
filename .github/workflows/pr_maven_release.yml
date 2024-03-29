@@ -1,7 +1,7 @@
 name: (PR) Maven Publish Release
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
