@@ -2,8 +2,8 @@ name: (PR) Maven Publish Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "release-v*.*.*"
 
 jobs:
   deploy:
@@ -20,8 +20,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 19
           cache: gradle
+          java-version: 19
 
       - name: Decode sign key
         id: decode-key
