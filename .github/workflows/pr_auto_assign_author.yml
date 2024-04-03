@@ -1,8 +1,9 @@
 name: (PR) Auto Assign Author
 
 on:
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+  push:
+    branches:
+      - 'test/**'
 
 permissions:
   pull-requests: write
