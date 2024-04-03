@@ -1,12 +1,13 @@
 name: Code Analyzing
 
 on:
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+  push:
+    branches:
+      - 'test/**'
 
 jobs:
   detekt_analyzer:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
         run: ./gradlew --no-daemon :notifications:detekt
 
   code_build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4

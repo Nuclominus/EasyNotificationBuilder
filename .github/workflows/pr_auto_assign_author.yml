@@ -1,16 +1,15 @@
 name: (PR) Auto Assign Author
 
 on:
-  push:
-    branches:
-      - 'test/**'
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 permissions:
   pull-requests: write
 
 jobs:
   assign-author:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: toshimaru/auto-author-assign@v1.6.2
         with:
