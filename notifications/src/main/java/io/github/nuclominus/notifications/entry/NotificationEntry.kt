@@ -14,7 +14,7 @@ import androidx.core.app.NotificationCompat
  * @property content [String] notification message
  * @property pendingIntent [PendingIntent] notification PendingIntent
  * @property actions List<[NotificationCompat.Action]> notification custom actions
- * @property data HashMap<[String], [String]> custom data
+ * @property data HashMap<[String], [Any]> custom data
  *
  */
 data class NotificationEntry(
@@ -26,5 +26,5 @@ data class NotificationEntry(
     val content: String = "",
     val pendingIntent: PendingIntent,
     val actions: List<NotificationCompat.Action> = emptyList(),
-    val data: HashMap<String, String> = hashMapOf()
+    val data: HashMap<String, Any> = hashMapOf()
 )
