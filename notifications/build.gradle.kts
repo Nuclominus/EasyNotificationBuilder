@@ -63,7 +63,7 @@ afterEvaluate {
 
                 groupId = "io.github.nuclominus"
                 artifactId = "easynotificationbuilder"
-                version = "0.2.1"
+                version = "0.2.2"
 
                 pom {
                     name.set("Easy Notification Builder")
