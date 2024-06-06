@@ -176,6 +176,15 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
     ): Style
 
     /**
+     * Modify the builder params
+     *
+     * @param builder The notification builder
+     */
+    fun modifyBuilder(builder : NotificationCompat.Builder) {
+        // Override this method to set custom params
+    }
+
+    /**
      * Get the intent for the notification
      *
      * @param context The context
