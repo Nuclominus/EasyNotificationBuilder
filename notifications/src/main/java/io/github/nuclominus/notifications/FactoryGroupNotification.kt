@@ -71,6 +71,7 @@ abstract class FactoryGroupNotification<T>(config: GlobalNotificationConfigurati
                 notif.group?.let(::setGroup)
                 setGroupSummary(includeSummary)
                 setStyle(buildContentStyle(ntf, notif))
+                modifyBuilder(this)
             }
 
             // add to list of builders
