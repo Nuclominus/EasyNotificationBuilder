@@ -180,7 +180,7 @@ abstract class FactoryNotification<T>(private val config: GlobalNotificationConf
      *
      * @param builder The notification builder
      */
-    fun modifyBuilder(builder : NotificationCompat.Builder) {
+    open fun modifyBuilder(builder : NotificationCompat.Builder) {
         // Override this method to set custom params
     }
 
